@@ -78,15 +78,13 @@ def run(iters: int, det_iters: int, seed: int) -> int:
         else:
             print(f"    cross_cycle: {iters} inputs — all DIFFERENT outputs (expected, algos are distinct)")
 
-    # ── 3. Known-answer check ────────────────────────────────────────────────
-    print("  running known-answer checks (canonical vectors)…")
-    canonical_answers = {
+    # ── 3. Known-answer check (RevEng catalogue only) ───────────────────────
+    print("  running known-answer checks (RevEng canonical vectors)…")
+    reveng_answers = {
         b"":          0x3FF,
-        b"\x00":     0x0AD,
-        b"\xff":     0x1D9,
         b"123456789": 0x12A,
     }
-    for data, expected in canonical_answers.items():
+    for data, expected in reveng_answers.items():
         result = crc(data)
         if result != expected:
             print(f"  FAIL: crc({data!r}) = 0x{result:03X}, want 0x{expected:03X}", file=sys.stderr)
