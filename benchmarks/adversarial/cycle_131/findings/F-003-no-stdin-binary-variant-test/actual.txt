@@ -1,5 +1,11 @@
 Current behavior: --stdin accepts any byte 0x00-0xFF and passes raw bytes to crc().
-Verified live: CRLF input (b"123456789\r\n") → 0x342, binary bytes → 0x050,
-empty stdin → 0x3ff. No test in tests/test_crc10_gsm.py asserts these specific
-stdin variants. The current test_cli_stdin only covers the canonical RevEng
-vector b"123456789" via subprocess.
+Verified live (crc10_gsm import available now):
+  CRLF input b"123456789\r\n" → 0x342
+  binary bytes b"\x00\xff\x7f\x80" → 0x050
+  empty stdin b"" → 0x3ff
+  all zeros 4B b"\x00\x00\x00\x00" → 0x3ff
+  all ones 4B b"\xff\xff\xff\xff" → 0x07f
+
+No test in tests/test_crc10_gsm.py asserts these specific stdin variants.
+The current test_cli_stdin only covers the canonical RevEng vector b"123456789"
+via subprocess.
