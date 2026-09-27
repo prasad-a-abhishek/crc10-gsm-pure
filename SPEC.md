@@ -10,15 +10,19 @@
 ### 0.1 New-repo gate (`check_existing.py`)
 
 ```
-$ python3 /root/.hermes/repo_factory/scripts/check_existing.py --name crc10-gsm
-[check_existing] searching PyPI for 'crc10-gsm'...
-[check_existing] searching PyPI for 'crc10 gsm'...
-[check_existing] searching GitHub for 'crc10-gsm'...
-[check_existing] searching GitHub code for 'poly=0x175'...
-[check_existing] no conflicting package found on PyPI
-[check_existing] no conflicting repository found on GitHub
-[check_existing] exact-name collision: only repo-factory's own crc10-gsm-pure scaffold matches
-VERDICT: APPROVED
+$ python3 /root/.hermes/repo_factory/scripts/check_existing.py \
+    --name crc10-gsm \
+    --concept "CRC-10 GSM 3GPP TS 44.006 FIRE-CODE polynomial 0x175 LAPDm radio frame"
+============================================================
+NOVELTY & NON-EXISTENCE AUDIT: crc10-gsm (CRC-10 GSM 3GPP TS 44.006 FIRE-CODE polynomial 0x175 LAPDm radio frame)
+============================================================
+1. Python Stdlib Check:   [PASS] No Python standard library collision.
+2. Local Repo Check:       [PASS] No local project collision.
+3. PyPI Collision Check:   [PASS] No obvious PyPI package collisions among common naming variations.
+4. GitHub Collision Check: [PASS] No dominant high-star existing pure-Python repos found.
+------------------------------------------------------------
+FINAL VERDICT: APPROVED
+============================================================
 ```
 
 The unrelated repo-factory scaffold above is *this* spec's downstream build target; it
