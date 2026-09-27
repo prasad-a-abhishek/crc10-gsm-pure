@@ -1,0 +1,16 @@
+{
+  "algorithm": "crc10-gsm",
+  "spec_authority": "3GPP TS 44.006 (GSM 04.06 / LAPDm) section 5.3.4 -- FIRE-CODE / CRC-10 over radio frames",
+  "reveng_entry": "width=10 poly=0x175 init=0x000 refin=false refout=false xorout=0x3FF check=0x12A",
+  "vectors": [
+    {"input_hex": "", "output": "0x3FF", "source": "computed (init=0, no bits; xorout=0x3FF applies)"},
+    {"input_hex": "00", "output": "0x3FF", "source": "computed (single 0x00 byte; algorithm step-through)"},
+    {"input_hex": "01", "output": "0x28A", "source": "computed (single 0x01 byte)"},
+    {"input_hex": "ff", "output": "0x274", "source": "computed (single 0xFF byte)"},
+    {"input_hex": "00 01 02 03 04 05 06 07 08 09", "output": "0x150", "source": "computed (0..9 byte sequence)"},
+    {"input_hex": "31 32 33 34 35 36 37 38 39", "output": "0x12A", "source": "RevEng catalogue check value (ASCII 123456789)"}
+  ],
+  "build_target_test_count": 100,
+  "ac_count": 12,
+  "computation_note": "Reference Python per RevEng pseudocode: state <-> width bit (LSB-first init=0), update via poly 0x175 with top-bit feedback, final xor with 0x3FF. RevEng check 0x12A for ASCII '123456789' confirmed via independent recomputation."
+}
