@@ -1,0 +1,17 @@
+{
+  "harness": "harness_cli.py",
+  "surface": "crc10-gsm CLI (--self-test, --register, --data, --stdin, --help)",
+  "iters_data": 30,
+  "iters_stdin": 15,
+  "unexpected_rcs": 0,
+  "mismatches": 0,
+  "timeouts": 0,
+  "injection_attempts": 3,
+  "shell_injection_files_created": 0,
+  "total_secs": 0.901,
+  "exec_per_sec": 87.72,
+  "unexpected_rc_samples": [],
+  "mismatch_samples": [],
+  "timeout_samples": [],
+  "verdict": "PASS"
+}

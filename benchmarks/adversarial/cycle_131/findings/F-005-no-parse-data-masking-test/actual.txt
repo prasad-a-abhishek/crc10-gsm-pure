@@ -1,0 +1,7 @@
+Current behavior: _parse_data silently masks parsed integers via & 0xFF:
+  __main__.py:28  int(v, 16) & 0xFF
+  __main__.py:31  int(v) & 0xFF
+  __main__.py:34  v.encode("latin-1") (bytes already single-byte)
+
+No test in tests/test_crc10_gsm.py asserts the masking for -1, -0x10, 0x100.
+TEST_GAPS gaps #17/#18/#19 document the masking but do not pin it in the suite.

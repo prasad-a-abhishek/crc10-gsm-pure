@@ -1,0 +1,4 @@
+No stack trace — this is a test-coverage gap, not a runtime failure.
+The masking behaviour is intentional and deterministic; no error is raised.
+No crash, hang, or oracle mismatch was triggered. The gap is the absence of
+a unit test pinning the & 0xFF masking contract.

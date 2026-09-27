@@ -1,0 +1,4 @@
+No stack trace — this is a test-coverage gap, not a runtime failure.
+Algorithm is provably O(n) with constant-factor inner loop. No crash, hang,
+or oracle mismatch was triggered. The gap is the absence of a unit test
+pinning the large-input linear-time bound.

@@ -1,0 +1,3 @@
+Expected behavior after fix: tests/test_crc10_gsm.py gains a test that
+asserts --data ZZZZ exits 0 and outputs 0x304. The test pins the
+latin-1 fallback behaviour so a future refactor cannot silently change it.

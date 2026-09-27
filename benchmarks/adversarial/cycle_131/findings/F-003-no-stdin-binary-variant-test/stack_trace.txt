@@ -1,0 +1,4 @@
+No stack trace — this is a test-coverage gap, not a runtime failure.
+No crash, hang, or oracle mismatch was triggered. The --stdin path works correctly
+for binary input; the gap is the absence of a unit test pinning the binary-stdin
+contract values.

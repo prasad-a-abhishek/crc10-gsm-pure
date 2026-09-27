@@ -1,0 +1,3 @@
+Expected behavior after fix: tests/test_crc10_gsm.py gains a pytest.mark.slow test
+that asserts 100 MiB all-zero input completes within a linear time bound (e.g. <30s).
+CWE-400 is pinned in the test suite, not just verified live by the auditor.

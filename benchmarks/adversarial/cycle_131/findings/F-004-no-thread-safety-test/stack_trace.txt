@@ -1,0 +1,4 @@
+No stack trace — this is a test-coverage gap, not a runtime failure.
+The implementation is thread-safe by design (pure function, no globals).
+No crash, hang, or oracle mismatch was triggered. The gap is the absence of
+a unit test asserting thread-safety determinism.

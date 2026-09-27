@@ -1,0 +1,4 @@
+Expected behavior after fix: tests/test_crc10_gsm.py gains a test that pipes
+binary stdin variants (CRLF-terminated, binary bytes, empty) to --stdin and
+asserts the correct CRC values. The binary-stdin contract is pinned in the
+test suite so a future refactor cannot silently change it.

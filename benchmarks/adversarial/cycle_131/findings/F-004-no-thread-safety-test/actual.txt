@@ -1,0 +1,5 @@
+Current behavior: crc() is a pure function with no shared mutable state.
+TEST_GAPS gaps #14/#15 note that re-entrancy and thread-safety are not covered.
+No test in tests/test_crc10_gsm.py asserts thread-safety or concurrent call
+determinism. A future change adding module-level mutable state would not be
+caught by the test suite.

@@ -1,0 +1,4 @@
+Current behavior: --data ZZZZ exits 0 and outputs 0x304 (CRC of b"ZZZZ").
+No test in tests/test_crc10_gsm.py asserts this specific output value.
+The test suite covers --data with hex and decimal inputs, but not the latin-1
+fallback path triggered by non-numeric, non-hex strings.

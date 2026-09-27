@@ -1,0 +1,70 @@
+{"iter": 0, "shape": "type_error:None", "expr": "None", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got NoneType", "elapsed": 0.014527792111039162}
+{"iter": 1, "shape": "type_error:int", "expr": "42", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got int", "elapsed": 0.013950292021036148}
+{"iter": 2, "shape": "type_error:str", "expr": "'string'", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got str", "elapsed": 0.013863417087122798}
+{"iter": 3, "shape": "type_error:list", "expr": "[1, 2, 3]", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got list", "elapsed": 0.013641332974657416}
+{"iter": 4, "shape": "type_error:dict", "expr": "{'k': 1}", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got dict", "elapsed": 0.013828624971210957}
+{"iter": 5, "shape": "type_error:float", "expr": "3.14", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got float", "elapsed": 0.013784333830699325}
+{"iter": 6, "shape": "type_error:object", "expr": "object()", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got object", "elapsed": 0.014117082813754678}
+{"iter": 7, "shape": "type_error:generator", "expr": "(i for i in range(3))", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got generator", "elapsed": 0.014161541126668453}
+{"iter": 8, "shape": "type_error:range", "expr": "range(5)", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got range", "elapsed": 0.013817625120282173}
+{"iter": 9, "shape": "type_error:tuple", "expr": "(1, 2, 3)", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got tuple", "elapsed": 0.013783042086288333}
+{"iter": 10, "shape": "type_error:set", "expr": "{1, 2, 3}", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got set", "elapsed": 0.014038499910384417}
+{"iter": 11, "shape": "type_error:frozenset", "expr": "frozenset({1, 2})", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got frozenset", "elapsed": 0.013790291966870427}
+{"iter": 12, "shape": "type_error:iterator", "expr": "iter([1, 2, 3])", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got list_iterator", "elapsed": 0.014110707910731435}
+{"iter": 13, "shape": "type_error:complex", "expr": "1+2j", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got complex", "elapsed": 0.0171099160797894}
+{"iter": 14, "shape": "type_error:bool", "expr": "True", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got bool", "elapsed": 0.01598050002939999}
+{"iter": 15, "shape": "type_error:bytes_already", "expr": "b'hello'", "rc": 0, "stdout": "457", "stderr": "", "elapsed": 0.014391707954928279}
+{"iter": 16, "shape": "type_error:bytearray_already", "expr": "bytearray(b'hello')", "rc": 0, "stdout": "457", "stderr": "", "elapsed": 0.013987999875098467}
+{"iter": 17, "shape": "type_error:memoryview_already", "expr": "memoryview(b'hello')", "rc": 0, "stdout": "457", "stderr": "", "elapsed": 0.013785292161628604}
+{"iter": 18, "shape": "type_error:two_args", "expr": "(b'hello', 42)", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got tuple", "elapsed": 0.014074041042476892}
+{"iter": 19, "shape": "type_error:nested_bad", "expr": "[[]]", "rc": 1, "stdout": "", "stderr": "TYPEERROR: crc10_gsm.crc() expected bytes-like, got list", "elapsed": 0.013753833016380668}
+{"iter": 0, "shape": "canonical_ac3", "payload_len": 9, "rc": 0, "stdout": "298", "stderr": "", "elapsed": 0.013802957953885198}
+{"iter": 1, "shape": "random_long", "payload_len": 1225, "rc": 0, "stdout": "589", "stderr": "", "elapsed": 0.014096291968598962}
+{"iter": 2, "shape": "all_zero_n", "payload_len": 576, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.013825583038851619}
+{"iter": 3, "shape": "alternating", "payload_len": 3766, "rc": 0, "stdout": "765", "stderr": "", "elapsed": 0.015108374878764153}
+{"iter": 4, "shape": "empty", "payload_len": 0, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.01407920802012086}
+{"iter": 5, "shape": "all_ff_n", "payload_len": 1756, "rc": 0, "stdout": "900", "stderr": "", "elapsed": 0.014317250112071633}
+{"iter": 6, "shape": "leading_ff", "payload_len": 867, "rc": 0, "stdout": "827", "stderr": "", "elapsed": 0.014543625060468912}
+{"iter": 7, "shape": "alternating", "payload_len": 1926, "rc": 0, "stdout": "812", "stderr": "", "elapsed": 0.014655333012342453}
+{"iter": 8, "shape": "ascii_text", "payload_len": 462, "rc": 0, "stdout": "274", "stderr": "", "elapsed": 0.014163000043481588}
+{"iter": 9, "shape": "random_1MiB", "payload_len": 1048576, "rc": 0, "stdout": "766", "stderr": "", "elapsed": 0.3969179580453783}
+{"iter": 10, "shape": "sweep_0_to_n", "payload_len": 1884, "rc": 0, "stdout": "58", "stderr": "", "elapsed": 0.01576166693121195}
+{"iter": 11, "shape": "ascii_text", "payload_len": 110, "rc": 0, "stdout": "711", "stderr": "", "elapsed": 0.014624791918322444}
+{"iter": 12, "shape": "random_long", "payload_len": 3964, "rc": 0, "stdout": "591", "stderr": "", "elapsed": 0.01650158315896988}
+{"iter": 13, "shape": "single_byte_7f", "payload_len": 1, "rc": 0, "stdout": "896", "stderr": "", "elapsed": 0.014219125034287572}
+{"iter": 14, "shape": "all_zero_n", "payload_len": 1884, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.015470500104129314}
+{"iter": 15, "shape": "single_bit_walk", "payload_len": 137, "rc": 0, "stdout": "777", "stderr": "", "elapsed": 0.014887416968122125}
+{"iter": 16, "shape": "alternating", "payload_len": 3148, "rc": 0, "stdout": "376", "stderr": "", "elapsed": 0.015289250062778592}
+{"iter": 17, "shape": "alternating", "payload_len": 2164, "rc": 0, "stdout": "851", "stderr": "", "elapsed": 0.015036833006888628}
+{"iter": 18, "shape": "alternating", "payload_len": 1035, "rc": 0, "stdout": "382", "stderr": "", "elapsed": 0.01436099992133677}
+{"iter": 19, "shape": "single_byte_ff", "payload_len": 1, "rc": 0, "stdout": "628", "stderr": "", "elapsed": 0.014090416952967644}
+{"iter": 20, "shape": "single_byte_80", "payload_len": 1, "rc": 0, "stdout": "523", "stderr": "", "elapsed": 0.013744500000029802}
+{"iter": 21, "shape": "random_long", "payload_len": 3566, "rc": 0, "stdout": "155", "stderr": "", "elapsed": 0.015513292048126459}
+{"iter": 22, "shape": "ascii_text", "payload_len": 880, "rc": 0, "stdout": "558", "stderr": "", "elapsed": 0.013929250184446573}
+{"iter": 23, "shape": "random_1MiB", "payload_len": 1048576, "rc": 0, "stdout": "730", "stderr": "", "elapsed": 0.3917667919304222}
+{"iter": 24, "shape": "alternating", "payload_len": 1590, "rc": 0, "stdout": "558", "stderr": "", "elapsed": 0.016158124897629023}
+{"iter": 25, "shape": "two_bytes_same", "payload_len": 2, "rc": 0, "stdout": "343", "stderr": "", "elapsed": 0.014150707982480526}
+{"iter": 26, "shape": "single_byte_0", "payload_len": 1, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.014107375172898173}
+{"iter": 27, "shape": "random_long", "payload_len": 3477, "rc": 0, "stdout": "989", "stderr": "", "elapsed": 0.015046749962493777}
+{"iter": 28, "shape": "single_byte_0", "payload_len": 1, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.013566458830609918}
+{"iter": 29, "shape": "random_1MiB", "payload_len": 1048576, "rc": 0, "stdout": "720", "stderr": "", "elapsed": 0.3942194578703493}
+{"iter": 30, "shape": "sweep_0_to_n", "payload_len": 399, "rc": 0, "stdout": "889", "stderr": "", "elapsed": 0.015801250003278255}
+{"iter": 31, "shape": "random_1MiB", "payload_len": 1048576, "rc": 0, "stdout": "645", "stderr": "", "elapsed": 0.3936267080716789}
+{"iter": 32, "shape": "all_ff_n", "payload_len": 2534, "rc": 0, "stdout": "896", "stderr": "", "elapsed": 0.017113042064011097}
+{"iter": 33, "shape": "two_bytes_diff", "payload_len": 2, "rc": 0, "stdout": "12", "stderr": "", "elapsed": 0.013878375058993697}
+{"iter": 34, "shape": "empty", "payload_len": 0, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.013801542110741138}
+{"iter": 35, "shape": "trailing_ff", "payload_len": 508, "rc": 0, "stdout": "57", "stderr": "", "elapsed": 0.013979875016957521}
+{"iter": 36, "shape": "random_1MiB", "payload_len": 1048576, "rc": 0, "stdout": "194", "stderr": "", "elapsed": 0.49557079188525677}
+{"iter": 37, "shape": "single_bit_walk", "payload_len": 54, "rc": 0, "stdout": "507", "stderr": "", "elapsed": 0.015198833076283336}
+{"iter": 38, "shape": "single_byte_0", "payload_len": 1, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.01475566579028964}
+{"iter": 39, "shape": "random_short", "payload_len": 9, "rc": 0, "stdout": "539", "stderr": "", "elapsed": 0.01423329091630876}
+{"iter": 40, "shape": "random_short", "payload_len": 37, "rc": 0, "stdout": "503", "stderr": "", "elapsed": 0.013837124919518828}
+{"iter": 41, "shape": "single_byte_0", "payload_len": 1, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.01384958392009139}
+{"iter": 42, "shape": "random_short", "payload_len": 42, "rc": 0, "stdout": "674", "stderr": "", "elapsed": 0.01372837508097291}
+{"iter": 43, "shape": "single_byte_80", "payload_len": 1, "rc": 0, "stdout": "523", "stderr": "", "elapsed": 0.01378050004132092}
+{"iter": 44, "shape": "two_bytes_same", "payload_len": 2, "rc": 0, "stdout": "95", "stderr": "", "elapsed": 0.01386291696690023}
+{"iter": 45, "shape": "trailing_ff", "payload_len": 54, "rc": 0, "stdout": "277", "stderr": "", "elapsed": 0.013987916987389326}
+{"iter": 46, "shape": "single_byte_ff", "payload_len": 1, "rc": 0, "stdout": "628", "stderr": "", "elapsed": 0.01372399996034801}
+{"iter": 47, "shape": "single_byte_0", "payload_len": 1, "rc": 0, "stdout": "1023", "stderr": "", "elapsed": 0.013559708837419748}
+{"iter": 48, "shape": "random_long", "payload_len": 2271, "rc": 0, "stdout": "353", "stderr": "", "elapsed": 0.014744667103514075}
+{"iter": 49, "shape": "single_byte_1", "payload_len": 1, "rc": 0, "stdout": "650", "stderr": "", "elapsed": 0.013841375010088086}

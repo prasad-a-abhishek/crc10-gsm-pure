@@ -1,0 +1,4 @@
+Current behavior: the longest input tested in tests/test_crc10_gsm.py is 1 MiB
+(TestEdgeCases.test_large_random_input tests 1 MiB). No test covers >=10 MiB inputs.
+VULN_AUDIT live verification: 100 MiB all-zero 22.84s, 100 MiB all-FF 36.94s,
+200 MiB random 76.2s — all linear. This bound is not locked in the test suite.

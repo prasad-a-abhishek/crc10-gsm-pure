@@ -1,0 +1,3 @@
+No stack trace — this is a test-coverage gap, not a runtime failure.
+No crash, hang, or oracle mismatch was triggered. The behaviour is intentional
+and deterministic; the gap is the absence of a unit test asserting it.
