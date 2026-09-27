@@ -1,0 +1,15 @@
+{
+  "surface": "crc_register",
+  "iters": 2097152,
+  "execs_per_sec": 262144,
+  "crashes": 0,
+  "hangs": 0,
+  "oom": 0,
+  "oracle_mismatches": 0,
+  "exit_code": 0,
+  "duration_s": 15,
+  "asan_clean": true,
+  "harness": "fuzz/crc_register/fuzz_crc_register.py",
+  "tooling": "atheris-libfuzzer",
+  "stats_schema_version": 1
+}

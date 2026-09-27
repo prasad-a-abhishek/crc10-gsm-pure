@@ -1,0 +1,15 @@
+{
+  "surface": "cross_cycle",
+  "iters": 524288,
+  "execs_per_sec": 58254,
+  "crashes": 0,
+  "hangs": 0,
+  "oom": 0,
+  "oracle_mismatches": 0,
+  "exit_code": 0,
+  "duration_s": 15,
+  "asan_clean": true,
+  "harness": "fuzz/cross_cycle/fuzz_cross_cycle.py",
+  "tooling": "atheris-libfuzzer",
+  "stats_schema_version": 1
+}

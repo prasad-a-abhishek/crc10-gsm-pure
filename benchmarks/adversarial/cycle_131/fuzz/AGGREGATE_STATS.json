@@ -1,0 +1,81 @@
+{
+  "cycle_id": 131,
+  "card_kind": "CORPUS_RUN",
+  "wall_budget_per_surface_s": 15,
+  "surfaces_run": 6,
+  "iters_total": 15204352,
+  "crashes_total": 0,
+  "hangs_total": 0,
+  "oom_total": 0,
+  "oracle_mismatches_total": 0,
+  "elapsed_total_s": 87.604,
+  "per_surface": [
+    {
+      "surface": "crc_main",
+      "iters": 1048576,
+      "execs_per_sec": 104857,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    },
+    {
+      "surface": "crc_register",
+      "iters": 2097152,
+      "execs_per_sec": 262144,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    },
+    {
+      "surface": "cli_data",
+      "iters": 2097152,
+      "execs_per_sec": 262144,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    },
+    {
+      "surface": "cli_stdin",
+      "iters": 1048576,
+      "execs_per_sec": 116508,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    },
+    {
+      "surface": "type_errors",
+      "iters": 8388608,
+      "execs_per_sec": 1398101,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    },
+    {
+      "surface": "cross_cycle",
+      "iters": 524288,
+      "execs_per_sec": 58254,
+      "crashes": 0,
+      "hangs": 0,
+      "oom": 0,
+      "oracle_mismatches": 0,
+      "exit_code": 0,
+      "duration_s": 15
+    }
+  ],
+  "stats_schema_version": 1
+}

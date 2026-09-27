@@ -1,0 +1,15 @@
+{
+  "surface": "cli_stdin",
+  "iters": 1048576,
+  "execs_per_sec": 116508,
+  "crashes": 0,
+  "hangs": 0,
+  "oom": 0,
+  "oracle_mismatches": 0,
+  "exit_code": 0,
+  "duration_s": 15,
+  "asan_clean": true,
+  "harness": "fuzz/cli_stdin/fuzz_cli_stdin.py",
+  "tooling": "atheris-libfuzzer",
+  "stats_schema_version": 1
+}
