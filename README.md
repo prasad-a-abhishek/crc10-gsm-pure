@@ -27,15 +27,16 @@ CRC-10/GSM operates over a 10-bit state — the inner loop processes 8 bit-itera
 input byte. As a reference implementation we prioritize clarity over speed; a table-driven
 variant (out of scope at v0.1.0) would be ~10× faster.
 
-Benchmark (`python3 benchmarks/run_benchmark.py`):
+Measured throughput (`time.perf_counter()`, 50 iterations × 3 workloads, see
+`benchmarks/BENCHMARK.md` for the full table):
 
-| Implementation      | 1 KiB   | 64 KiB  | 1 MiB   |
-|---------------------|---------|---------|---------|
-| crc10-gsm (this)    | ~5 ms   | ~330 ms | ~5.2 s  |
-| crcmod (with C ext) | ~0.3 ms | ~20 ms  | ~0.3 s  |
+| Workload                | Mean      | P95       |
+|-------------------------|-----------|-----------|
+| `b"A"` (1 B)            | ~0.7 µs   | ~1.0 µs   |
+| `b"123456789"` (9 B)    | ~4.1 µs   | ~4.4 µs   |
+| `os.urandom(1 MB)`      | ~359 ms   | ~362 ms   |
 
-(measured on Python 3.11.15 / Linux x86_64, CPython 3.11.15, `time.perf_counter()`;
-full table in `benchmarks/BENCHMARK.md`)
+Run locally:
 
 ```bash
 python3 benchmarks/run_benchmark.py
