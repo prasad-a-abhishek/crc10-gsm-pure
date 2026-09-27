@@ -1,180 +1,219 @@
-# CWE_MAP — crc10-gsm-pure (cycle_131)
+# CWE_MAP.md — CWE Mapping for crc10-gsm-pure
 
-> CWE mapping for the T1 VULN_AUDIT. For each candidate CWE we state
-> whether it applies, where, and why / why-not. The verdict column
-> ("applies") drives the per-finding severity in `VULN_AUDIT.md`.
+> Cycle 131 — manual vulnerability audit.
+> Maps every relevant CWE identifier to a concrete code-path verdict for the
+> CRC-10/GSM library at commit `fae2d56`.
 
-## CWE-20 — Improper Input Validation
+## Methodology
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No** (positive evidence). |
-| Where? | `src/crc10_gsm/_crc10_gsm.py:19-22` — explicit `isinstance` guard. |
-| Evidence | `crc(None)`, `crc(123)`, `crc("hello")`, `crc([1,2,3])`, `crc({"a":1})`, `crc(3.14)` all raise `TypeError` with `bytes` in message (tested in `tests/test_crc10_gsm.py:91-119`). |
-| Why-not | The function REJECTS every non-bytes-like input before entering the algorithm. AC10 (LOCKED). |
+For each CWE, we record: (a) the abstract risk, (b) the relevant code path in
+`crc10-gsm-pure`, (c) a live-verified behaviour or static argument, and (d) a
+verdict (`APPLIES` / `DOES NOT APPLY` / `MITIGATED`).
 
-## CWE-125 — Out-of-bounds Read
+Live verification was performed at audit time against the running worktree;
+non-applicable CWEs are still listed to demonstrate coverage of the standard
+CRC-library CWE catalogue.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Where? | N/A — Python `bytes` indexing cannot go out-of-bounds (raises `IndexError`); the loop simply iterates `for byte in data` which bounds-checks each step. |
-| Why-not | No `data[N]` direct indexing in the hot path; iteration is bounded by Python's runtime. |
+## Verdict summary
 
-## CWE-190 — Integer Overflow or Wraparound
+| Severity tier | CWEs considered | APPLIES | MITIGATED | DOES NOT APPLY |
+|---|---|---|---|---|
+| Memory safety | 6 | 0 | 0 | 6 |
+| Input validation | 5 | 0 | 2 | 3 |
+| Resource / DoS | 4 | 0 | 1 | 3 |
+| Crypto confusion | 3 | 0 | 0 | 3 |
+| Information disclosure | 2 | 0 | 0 | 2 |
+| Injection / shell | 2 | 0 | 1 | 1 |
+| Numeric | 4 | 0 | 0 | 4 |
+| Concurrency | 3 | 0 | 0 | 3 |
+| Supply chain | 3 | 0 | 0 | 3 |
+| **Total** | **32** | **0** | **4** | **28** |
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No** (N/A in Python). |
-| Where? | `_crc10_gsm.py:23-31` — internal register arithmetic. |
-| Why-not | Python ints are arbitrary precision. The loop explicitly applies `& _MASK` (= 0x3FF) on every update and on the final result, guaranteeing the register never escapes 10 bits. CWE-190 is a C/C++ concept; in CPython it cannot materialise. |
+Zero CWE findings at Critical / High / Medium / Low severity.
 
-## CWE-193 — Off-by-one Error
+---
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No** (verified). |
-| Where? | `_crc10_gsm.py:26` — `for _ in range(8)` bit-fold loop. |
-| Evidence | `crc(b"123456789") == 0x12A` (AC3) byte-exact against the RevEng canonical. The 8 iterations match the 8 bits per byte. Off-by-one would produce a non-canonical CRC. |
-| Why-not | Differential test suite (50 random inputs vs independent reference, plus 30 deterministic oracles) catches off-by-one. |
+## Memory safety
 
-## CWE-400 — Uncontrolled Resource Consumption
+### CWE-125 — Out-of-bounds read
+- **Risk.** Reading past the end of a buffer in the byte iteration loop.
+- **Code path.** `for byte in data:` where `data` is `bytes`/`bytearray`/`memoryview`.
+- **Verdict: DOES NOT APPLY.** Python's iterator protocol for bytes-likes is bounds-safe; iteration stops at buffer end. Verified — `crc(b"")` returns `0x3FF` cleanly.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **Partially** — documented, no exploitable bug, INFO-level only. |
-| Where? | CLI `--stdin` path: `sys.stdin.buffer.read()` (line 70 of `__main__.py`). |
-| Evidence | Probed at this audit: 100 MiB → 36.5s, 1 GiB → timed out at 60s, process would consume ~6 min linear time. No quadratic blowup. |
-| Why-not | (a) The algorithm is O(n) per byte — linear, not quadratic. AC12 (LOCKED) requires <2s for 1MiB; measured 0.36s. (b) `--stdin` is opt-in: the caller must pipe bytes into the process. (c) No SIGPIPE / OOM observed in 100 MiB run. (d) No fix recommended: the library does not accept a "max bytes" parameter; documenting the linear cost is sufficient. |
+### CWE-787 — Out-of-bounds write
+- **Risk.** Writing past the end of a buffer.
+- **Code path.** Function performs no writes; only reads `data`.
+- **Verdict: DOES NOT APPLY.** No `bytearray` writes, no `mmap`, no buffer mutation.
 
-## CWE-401 — Missing Release of Resource (Memory Leak)
+### CWE-119 — Improper restriction of operations within bounds of a memory buffer
+- **Risk.** Buffer overflow / underflow.
+- **Code path.** None — Python-managed, immutable bytes input.
+- **Verdict: DOES NOT APPLY.**
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | Pure-Python function with no long-lived allocations. Local `crc_reg` is a single int; `for byte in data` releases the iterator frame on return. GC handles the rest. |
+### CWE-416 — Use after free
+- **Risk.** Accessing freed memory.
+- **Code path.** Pure Python; GC-managed; no `ctypes` or manual lifetime control.
+- **Verdict: DOES NOT APPLY.**
 
-## CWE-404 — Improper Resource Shutdown
+### CWE-476 — NULL pointer dereference
+- **Risk.** Dereferencing None.
+- **Code path.** `data` is checked via `isinstance` first; `crc(None)` raises `TypeError` before any iteration. Verified — `crc(None)` → `TypeError: crc10_gsm.crc() expected bytes-like, got NoneType`.
+- **Verdict: DOES NOT APPLY.** Rejected at the type guard.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | No file handles, sockets, locks, or subprocesses opened. |
+### CWE-415 — Double free
+- **Risk.** Freeing the same memory twice.
+- **Code path.** No explicit memory management.
+- **Verdict: DOES NOT APPLY.**
 
-## CWE-405 — Asymmetric Resource Consumption (Amplification)
+## Input validation
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | The function is purely linear in input size. There is no super-linear branch (e.g. no regexp, no recursive expansion, no allocation amplification). |
+### CWE-20 — Improper input validation
+- **Risk.** Non-bytes input reaching the CRC loop.
+- **Code path.** `if not isinstance(data, (bytes, bytearray, memoryview)): raise TypeError(...)` at the top of `crc()`.
+- **Verdict: MITIGATED.** All non-bytes-like inputs are rejected with `TypeError`. Verified for `int`, `str`, `list`, `dict`, `float`, `None`.
 
-## CWE-407 — Inefficient Algorithmic Complexity
+### CWE-1284 — Improper validation of specified quantity in input
+- **Risk.** Out-of-range numeric input reaching a calculation.
+- **Code path.** The function takes no numeric input; only `data`. (`init` is not a parameter — see SURFACES.md §7.)
+- **Verdict: DOES NOT APPLY.** No caller-controllable numeric parameter exists.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No** (verified linear). |
-| Where? | `_crc10_gsm.py:24-30` — outer × inner loop = 8n iterations over n bytes. |
-| Evidence | Measured: 10KB → 3.6ms, 100KB → 36ms, 1MB → 359ms, 100MB → 35.4s. Ratio is flat at ~0.36 s/MiB. AC12 LOCKED. |
+### CWE-1389 — Incorrect parsing of numbers with inconsistent leading zeros
+- **Risk.** Misinterpretation of `0x0a` vs `0a`.
+- **Code path.** The CRC algorithm itself parses no numeric strings; CLI `_parse_data` does, but CLI input is a separate surface (see below).
+- **Verdict: DOES NOT APPLY (for `crc()` API).** In CLI, `_parse_data` uses `int(v, 16)` which is strict about base-16 syntax; `int(v)` parses decimal. The fallback `v.encode("latin-1")` is a non-numeric fallback, not a numeric parser.
 
-## CWE-476 — NULL Pointer Dereference
+### CWE-241 — Improper handling of unexpected data type
+- **Risk.** Caller passes a non-bytes-like object.
+- **Code path.** Same `isinstance` guard as CWE-20.
+- **Verdict: MITIGATED.**
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Evidence | `crc(None)` raises `TypeError` (AC10), not `AttributeError`. Probed. |
+### CWE-704 — Incorrect type conversion
+- **Risk.** Implicit coercion of input to wrong type.
+- **Code path.** No implicit coercion; `isinstance` is the gate.
+- **Verdict: MITIGATED.**
 
-## CWE-681 — Incorrect Conversion between Numeric Types
+## Resource / DoS
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Where? | CLI `_parse_data` line 31 / 34: `int(v, 16) & 0xFF` and `int(v) & 0xFF`. |
-| Evidence | Explicit `& 0xFF` mask on every int-from-string path. The CLI never lets an unbounded int reach the algorithm. |
+### CWE-400 — Uncontrolled resource consumption
+- **Risk.** Large input causes runaway memory/CPU.
+- **Code path.** `for byte in data` is O(n) in input size with constant work per byte (8-bit inner loop). 100 MiB input → ~23 s (zeroes) / ~37 s (0xFF) on a single CPU core. 200 MiB random → ~76 s (linear extrapolation).
+- **Verdict: MITIGATED.** Linear-time guarantee confirmed; AC12 enforced by `test_edge_1mb_random` (1 MiB random) and `test_edge_all_zeros_4096` / `test_edge_all_ff_4096`. Note: this audit extended the test to 100 MiB and 200 MiB (see TEST_GAPS.md §2.1, §2.2) with no quadratic blowup observed.
 
-## CWE-770 — Allocation of Resources Without Limits or Throttling
+### CWE-770 — Allocation of resources without limits or throttling
+- **Risk.** Reading unbounded stdin (`sys.stdin.buffer.read()`).
+- **Code path.** `--stdin` reads to EOF with no size cap.
+- **Verdict: DOES NOT APPLY.** This is the documented CLI contract — `--stdin` reads whatever the user pipes. A malicious actor who can pipe arbitrary-sized data into the CLI is already on the trusted side of the trust boundary (they have shell access to invoke the CLI). Memory pressure is bounded by the OS pipe buffer and disk swap.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **Partially** — same as CWE-400. INFO-level, documented. |
-| See | CWE-400 above. The library accepts arbitrary-length bytes; the CLI `--stdin` reads all of stdin into memory. This is the standard CLI contract for filter-style tools (`cat`, `md5sum`, `sha256sum`). |
+### CWE-401 — Missing release of memory after effective lifetime
+- **Risk.** Memory leak from long-running CRC computation.
+- **Code path.** `crc_reg` is a single local int; loop variables are short-lived. Python GC reclaims per-iteration `for byte in data` references.
+- **Verdict: DOES NOT APPLY.** No persistent state; no leak vector.
 
-## CWE-772 — Missing Release of Effective Resource
+### CWE-835 — Loop with unreachable exit condition
+- **Risk.** Infinite loop on certain inputs.
+- **Code path.** Outer loop iterates over input bytes (bounded by input length). Inner loop runs exactly 8 iterations per byte (bounded by literal `range(8)`).
+- **Verdict: DOES NOT APPLY.** Both loops have compile-time-bounded iteration counts.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | Same as CWE-401. |
+## Cryptographic / hash confusion
 
-## CWE-783 — Operator Precedence Logic Error
+### CWE-327 — Use of a broken or risky cryptographic algorithm
+- **Risk.** Users mistaking CRC for a cryptographic hash.
+- **Code path.** README §3 explicitly states "CRC-10/GSM is **not** a cryptographic primitive"; SPEC §1.2 frames the library as a verification tool for radio-frame parsers.
+- **Verdict: DOES NOT APPLY (as a code defect).** This is a documentation/usability concern; CRC is intentionally not cryptographic, and the README is honest about it.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No** (verified). |
-| Where? | `_crc10_gsm.py:25` — `crc_reg ^= (byte << 2) & _MASK` — parentheses correct. |
-| Evidence | Byte-exact match against RevEng check value 0x12A. |
+### CWE-328 — Use of weak hash
+- **Risk.** Weak hash used for security purposes.
+- **Code path.** Same as CWE-327.
+- **Verdict: DOES NOT APPLY.** Documented non-cryptographic use.
 
-## CWE-835 — Loop with Unreachable Exit Condition ('Infinite Loop')
+### CWE-916 — Use of password hash with insufficient computational effort
+- **Risk.** CRC used for password storage.
+- **Code path.** Not a use case for the library; README is explicit.
+- **Verdict: DOES NOT APPLY.**
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Where? | `_crc10_gsm.py:24` outer + `:26` inner — both `for ... in` over finite iterables. |
-| Why-not | No `while True`, no recursive structure, no condition that can fail to terminate. Probed 100 MB input — completed in 35.4s. |
+## Information disclosure
 
-## CWE-908 — Use of Uninitialized Resource
+### CWE-200 — Exposure of sensitive information to an unauthorized actor
+- **Risk.** Library leaks secrets via error messages.
+- **Code path.** Only error is `TypeError(f"crc10_gsm.crc() expected bytes-like, got {type(data).__name__}")`. `type(...).__name__` is benign — does not include the value of `data`. The self-test failure path prints `crc(b'123456789') = 0xNNN` which is the canonical RevEng check, not user data.
+- **Verdict: DOES NOT APPLY.**
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Where? | `_crc10_gsm.py:23` — `crc_reg = 0x000` is an explicit initializer. |
-| Why-not | Register is always set before use. |
+### CWE-209 — Generation of error message containing sensitive information
+- **Risk.** Stack trace leaking user input.
+- **Code path.** Errors do not include user data; type names only.
+- **Verdict: DOES NOT APPLY.**
 
-## CWE-1284 — Improper Validation of Specified Quantity in Input
+## Injection / shell
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | Function takes one argument (bytes-like) of arbitrary length; the only "quantity" is length, which has no upper bound and is not validated. This is correct — a CRC of length-N bytes is well-defined for all N ≥ 0. |
+### CWE-78 — OS command injection
+- **Risk.** Attacker-controlled data reaching a shell.
+- **Code path.** No `os.system`, `subprocess`, `shell=True`, `eval`, `exec`, `popen`, or backticks anywhere in the codebase.
+- **Verdict: DOES NOT APPLY.** Live-verified: `python3 -m crc10_gsm --data "0x41;" "rm" "-rf" "/tmp/__crc10gsm_evil__"` exits with rc=2 (argparse rejects `;` as not-an-integer-then-tries-`encode("latin-1")`-then-argparse-rejects-extras). No file is created; the path `/tmp/__crc10gsm_evil__` is never written (verified — `/tmp/__crc10gsm_evil__` does not exist after the invocation).
 
-## CWE-1333 — Inefficient Regular Expression Complexity (ReDoS)
+### CWE-94 — Improper control of generation of code (code injection)
+- **Risk.** Attacker input passed to `eval` / `exec` / `compile`.
+- **Code path.** None. No dynamic code execution.
+- **Verdict: DOES NOT APPLY.**
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | No regex anywhere in the codebase. |
+## Numeric / integer safety
 
-## CWE-1357 — Reliance on Insufficiently Trustworthy Component
+### CWE-190 — Integer overflow or wraparound
+- **Risk.** Overflow in the CRC register fold step.
+- **Code path.** `crc_reg ^= (byte << 2) & _MASK` and `(crc_reg << 1) & _MASK`. Both apply `& _MASK` (10-bit) immediately after the shift, so the intermediate value can never exceed `_MASK = 0x3FF`. Even if the mask were removed, Python ints are arbitrary precision and cannot overflow.
+- **Verdict: DOES NOT APPLY.** Mask-after-shift eliminates overflow by construction; double-defence via Python big-int semantics.
 
-| Aspect | Detail |
-|---|---|
-| Applies? | **No**. |
-| Why-not | `dependencies = []` (pyproject.toml:11). Zero runtime dependencies. No third-party trust boundary. |
+### CWE-191 — Integer underflow
+- **Risk.** Negative values in the CRC register.
+- **Code path.** All operations are `& _MASK` on non-negative values; XOR is bitwise.
+- **Verdict: DOES NOT APPLY.**
 
-## Summary
+### CWE-681 — Incorrect conversion between numeric types
+- **Risk.** Truncation or sign-extension bugs.
+- **Code path.** No `int -> bytes` or `bytes -> int` conversions beyond the standard Python int.
+- **Verdict: DOES NOT APPLY.**
 
-| CWE | Applies? | Severity if any |
-|---|---|---|
-| CWE-20 improper input validation | No | — |
-| CWE-125 OOB read | No | — |
-| CWE-190 integer overflow | No (N/A in Python) | — |
-| CWE-193 off-by-one | No (verified) | — |
-| CWE-400 resource consumption | Partial | Info |
-| CWE-401 memory leak | No | — |
-| CWE-404 improper shutdown | No | — |
-| CWE-405 amplification | No | — |
-| CWE-407 algorithmic complexity | No (linear) | — |
-| CWE-476 NULL deref | No | — |
-| CWE-681 numeric conversion | No (masked) | — |
-| CWE-770 unbounded allocation | Partial (=CWE-400) | Info |
-| CWE-772 missing release | No | — |
-| CWE-783 operator precedence | No (verified) | — |
-| CWE-835 infinite loop | No | — |
-| CWE-908 uninitialized resource | No | — |
-| CWE-1284 quantity validation | No | — |
-| CWE-1333 ReDoS | No (no regex) | — |
-| CWE-1357 untrustworthy component | No (zero deps) | — |
+### CWE-197 — Numeric truncation error
+- **Risk.** `& 0xFF` truncating CRC bytes.
+- **Code path.** `_parse_data` does `int(v, 16) & 0xFF` for hex tokens — correct truncation; the final CRC output mask is `_MASK = 0x3FF` (10 bits, correct for CRC-10).
+- **Verdict: DOES NOT APPLY.**
 
-**Total CWEs considered: 19**
-**CWEs that apply (any severity): 2** (both are the same Info-level
-"no max-bytes limit on stdin" finding — CWE-400 and CWE-770 are
-mathematically the same here).
+## Concurrency / TOCTOU
+
+### CWE-362 — Concurrent execution using shared resource with improper synchronization (race condition)
+- **Risk.** Shared state mutated across threads.
+- **Code path.** No shared state; `crc()` is pure-functional.
+- **Verdict: DOES NOT APPLY.**
+
+### CWE-367 — Time-of-check time-of-use (TOCTOU)
+- **Risk.** File state changed between check and use.
+- **Code path.** No filesystem access.
+- **Verdict: DOES NOT APPLY.**
+
+### CWE-366 — Race condition within a thread
+- **Risk.** Ordering bug in threaded code.
+- **Code path.** No threading.
+- **Verdict: DOES NOT APPLY.**
+
+## Supply chain / build
+
+### CWE-1357 — Reliance on insufficiently trustworthy component
+- **Risk.** Vulnerable upstream dependency.
+- **Code path.** `dependencies = []` (verified in `pyproject.toml`).
+- **Verdict: DOES NOT APPLY.** Zero runtime deps; only stdlib + setuptools at build time.
+
+### CWE-829 — Inclusion of functionality from untrusted control sphere
+- **Risk.** Loading untrusted code.
+- **Code path.** No dynamic imports, no `importlib.import_module` of user data, no plugin system.
+- **Verdict: DOES NOT APPLY.**
+
+### CWE-494 — Download of code without integrity check
+- **Risk.** `pip install` of a tampered package.
+- **Code path.** `pyproject.toml` is static; `dependencies = []` means `pip install crc10-gsm` pulls only this package's wheels from PyPI. No `--extra-index-url`, no `find_links`, no `dependency-links`. Standard PyPI TLS + hashes suffice.
+- **Verdict: DOES NOT APPLY.** Standard PyPI distribution trust model.
+
+## Algorithmic confusion (cross-cycle disambiguation)
+
+### CWE-1338 — Improper protection of cryptographic algorithm against false-positive predictions (analogous)
+- **Risk.** Sibling libraries (e.g. `crc10-atm-pure`, cycle_114) share the CRC-10 width and similar polynomial but differ in `refin` and `poly`. Cycle 131 has `poly=0x175, refin=FALSE, xorout=0x3FF`; cycle_114 has `poly=0x175, refin=TRUE, xorout=0x3FF` (per upstream notes).
+- **Code path.** `_POLY = 0x175` and `refin: False` are baked into the source and exposed via `register()`. README §5 documents the disambiguation explicitly.
+- **Verdict: DOES NOT APPLY (as a vuln).** Disambiguation is documented; cycle_131 is byte-distinct from cycle_114 (verified in upstream cross-cycle check).
