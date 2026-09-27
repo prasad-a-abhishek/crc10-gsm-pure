@@ -5,9 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "crc10-gsm"
 version = "0.1.0"
-description = "Pure-Python CRC-10/GSM (3GPP TS 44.006) reference implementation, zero runtime deps"
+description = "Pure-Python reference implementation of CRC-10/GSM (3GPP TS 44.006), zero runtime deps."
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
+
+[project.scripts]
+crc10-gsm = "crc10_gsm.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
